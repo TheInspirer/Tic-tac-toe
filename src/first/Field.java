@@ -4,25 +4,21 @@ import java.util.Scanner;
 public class Field {
     private Logic logic;
     private int[][] fields;  // Игровое поле
-    private int[][] example; // Заполняется от 1 до n * m, для определения индекса
-    private int[] allMoves;  // Заполняется всеми ответами, для учитывания ошибок и прочего
-    private int count;
+    private int count;       // Счетчик
 
 
 
     public Field(int n, int m) {
         logic = new Logic(n , m);
         fields = new int[n][m];
-        example = new int[n][m];
-        fillExample(example);
         count = 0;
-        allMoves = new int[n * m];
     }
 
+
+    // Запуск игры
     public void startGame(){
 
         Scanner scn = new Scanner(System.in);
-
         int canPlay = logic.canWePlay(count, fields);
 
         while (canPlay == 0) {
@@ -30,15 +26,12 @@ public class Field {
             addNewElemX(scn.nextInt());
             count++;
             showField();
-
             canPlay = logic.canWePlay(count, fields);
 
             if (canPlay == 0) {
                 addNewElemO(scn.nextInt());
                 count++;
-
             } else {
-
                 break;
             }
 
@@ -66,14 +59,17 @@ public class Field {
         }
     }
 
-
+    // Метод добавляет элемент для первого игрока в поле. Возвращает:
+    // Пока работает только вариант с успешным добавлением
+    //
+    //
     private void addNewElemX(int inputNumber){
 
-        int checkNumber = logic.checkIndex(inputNumber, allMoves);
+        int checkNumber = logic.checkIndex(inputNumber);
 
         if (checkNumber == 1) {
 
-            int[] array = logic.getIndex(inputNumber, allMoves, example, count);
+            int[] array = logic.getIndex(inputNumber, count);
 
             fields[array[0]][array[1]] = 1;
 
@@ -88,13 +84,17 @@ public class Field {
         }
     }
 
+    // Метод добавляет элемент для второго игрока в поле. Возвращает:
+    // Пока работает только вариант с успешным добавлением
+    //
+    //
     private void addNewElemO(int inputNumber){
 
-        int checkNumber = logic.checkIndex(inputNumber, allMoves);
+        int checkNumber = logic.checkIndex(inputNumber);
 
         if (checkNumber == 1) {
 
-            int[] array = logic.getIndex(inputNumber, allMoves, example, count);
+            int[] array = logic.getIndex(inputNumber, count);
 
             fields[array[0]][array[1]] = 2;
 
@@ -110,22 +110,7 @@ public class Field {
     }
 
 
-    private void fillExample(int[][] example){
-
-        int flag = 1;
-
-        for (int i = 0; i < example.length; i++) {
-
-            for (int j = 0; j < example[i].length; j++) {
-
-                example[i][j] = flag;
-                flag++;
-
-            }
-        }
-    }
-
-
+    // Метод выводит поле в консоль
     private void showField(){
 
         for (int i = 0; i < fields.length; i++) {
