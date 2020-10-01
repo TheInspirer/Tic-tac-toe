@@ -24,40 +24,19 @@ public class Field {
         int canPlay = 0;
 
         while (canPlay == 0){
-            boolean addX = false;
-            boolean addO = false;
+            int add = 0;
 
-            while (!addX){
-                int xAdd = addNewElemX(scn.nextInt());
+            while (add != 1){
+                add = addNewElem(scn.nextInt());
 
-                if (xAdd == 1){
+                if (add == 1){
                     count++;
-                    addX = true;
+                    add = 1;
 
                     showField();
                     canPlay = logic.canWePlay(count, fields);
 
-                } else if (xAdd == -1){
-                    System.out.println("Ошибка, данное поле уже занято");
-                    System.out.println("Попробуй снова");
-                } else {
-                    System.out.println("Элемент вышел за границы поля, вы указали неверное число");
-                    System.out.println("Попробуй снова");
-                }
-
-            }
-
-            while (!addO && canPlay == 0){
-                int oAdd = addNewElemO(scn.nextInt());
-
-                if (oAdd == 1){
-                    count++;
-                    addO = true;
-
-                    showField();
-                    canPlay = logic.canWePlay(count, fields);
-
-                } else if (oAdd == -1) {
+                } else if (add == -1){
                     System.out.println("Ошибка, данное поле уже занято");
                     System.out.println("Попробуй снова");
                 } else {
@@ -90,10 +69,10 @@ public class Field {
 
 
     // Метод добавляет элемент для первого игрока в поле. Возвращает:
-    //  1 Успешно добавлен элемент X
+    //  1 Успешно добавлен элемент X или O в зависимости от count
     // -1 Ошибка, данное поле уже занято
     //  0 Индекс вышел за границы поля, вы указали неверный индекс
-    public int addNewElemX(int inputNumber){
+    public int addNewElem(int inputNumber){
 
         int checkNumber = logic.checkIndex(inputNumber);
 
@@ -101,49 +80,33 @@ public class Field {
 
             int[] array = logic.getIndex(inputNumber, count);
 
-            fields[array[0]][array[1]] = 1;
+            if ( count % 2 == 0) {                  // Добавляем X
 
-            return 1;
+                fields[array[0]][array[1]] = 1;
+
+                return 1;
+
+            } else if (count % 2 == 1) {            // Добавляем O
+
+                fields[array[0]][array[1]] = 2;
+
+                return 1;
+
+            } else {
+
+                return -2;
+            }
 
         } else if (checkNumber == -1){
 
-            //System.out.println("Ошибка, данное поле уже занято");
             return -1;
 
         } else {
 
-            //System.out.println("Элемент вышел за границы поля, вы указали неверное число");
             return 0;
         }
     }
 
-    // Метод добавляет элемент для второго игрока в поле. Возвращает:
-    //  1 Успешно добавлен элемент X
-    // -1 Ошибка, данное поле уже занято
-    //  0 Индекс вышел за границы поля, вы указали неверный индекс
-    private int addNewElemO(int inputNumber){
-
-        int checkNumber = logic.checkIndex(inputNumber);
-
-        if (checkNumber == 1) {
-
-            int[] array = logic.getIndex(inputNumber, count);
-
-            fields[array[0]][array[1]] = 2;
-
-            return 1;
-
-        } else if (checkNumber == -1){
-
-            //System.out.println("Ошибка, данное поле уже занято");
-            return -1;
-
-        } else {
-
-            //System.out.println("Элемент вышел за границы поля, вы указали неверное число");
-            return 0;
-        }
-    }
 
 
     // Метод выводит поле в консоль
