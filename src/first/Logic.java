@@ -180,7 +180,7 @@ public class Logic {
 
 
 
-    // Метод заполняет двухмерный массив example по порядку
+    // Метод заполняет двумерный массив example по порядку
     private void fillExample(int[][] example){
 
         int flag = 1;

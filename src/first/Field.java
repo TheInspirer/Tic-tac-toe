@@ -3,14 +3,16 @@ import java.util.Scanner;
 
 public class Field {
     private Logic logic;
-    private int[][] fields;  // Игровое поле
-    private int count;       // Счетчик
+    private int[][] fields;     // Игровое поле для логики
+    private char[][] gameField; //
+    private int count;          // Счетчик
 
 
 
     public Field(int n, int m) {
         logic = new Logic(n , m);
         fields = new int[n][m];
+        gameField = new char[n][n];
         count = 0;
     }
 
@@ -19,24 +21,51 @@ public class Field {
     public void startGame(){
 
         Scanner scn = new Scanner(System.in);
-        int canPlay = logic.canWePlay(count, fields);
+        int canPlay = 0;
 
-        while (canPlay == 0) {
+        while (canPlay == 0){
+            boolean addX = false;
+            boolean addO = false;
 
-            addNewElemX(scn.nextInt());
-            count++;
-            showField();
-            canPlay = logic.canWePlay(count, fields);
+            while (!addX){
+                int xAdd = addNewElemX(scn.nextInt());
 
-            if (canPlay == 0) {
-                addNewElemO(scn.nextInt());
-                count++;
-            } else {
-                break;
+                if (xAdd == 1){
+                    count++;
+                    addX = true;
+
+                    showField();
+                    canPlay = logic.canWePlay(count, fields);
+
+                } else if (xAdd == -1){
+                    System.out.println("Ошибка, данное поле уже занято");
+                    System.out.println("Попробуй снова");
+                } else {
+                    System.out.println("Элемент вышел за границы поля, вы указали неверное число");
+                    System.out.println("Попробуй снова");
+                }
+
             }
 
-            canPlay = logic.canWePlay(count, fields);
-            showField();
+            while (!addO && canPlay == 0){
+                int oAdd = addNewElemO(scn.nextInt());
+
+                if (oAdd == 1){
+                    count++;
+                    addO = true;
+
+                    showField();
+                    canPlay = logic.canWePlay(count, fields);
+
+                } else if (oAdd == -1) {
+                    System.out.println("Ошибка, данное поле уже занято");
+                    System.out.println("Попробуй снова");
+                } else {
+                    System.out.println("Элемент вышел за границы поля, вы указали неверное число");
+                    System.out.println("Попробуй снова");
+                }
+
+            }
         }
 
 
@@ -59,11 +88,12 @@ public class Field {
         }
     }
 
+
     // Метод добавляет элемент для первого игрока в поле. Возвращает:
     // Пока работает только вариант с успешным добавлением
     //
     //
-    private void addNewElemX(int inputNumber){
+    public int addNewElemX(int inputNumber){
 
         int checkNumber = logic.checkIndex(inputNumber);
 
@@ -73,14 +103,17 @@ public class Field {
 
             fields[array[0]][array[1]] = 1;
 
+            return 1;
+
         } else if (checkNumber == -1){
 
-            System.out.println("Ошибка, данное поле уже занято");
+            //System.out.println("Ошибка, данное поле уже занято");
+            return -1;
 
         } else {
 
-            System.out.println("Элемент вышел за границы поля, вы указали неверное число");
-
+            //System.out.println("Элемент вышел за границы поля, вы указали неверное число");
+            return 0;
         }
     }
 
@@ -88,7 +121,7 @@ public class Field {
     // Пока работает только вариант с успешным добавлением
     //
     //
-    private void addNewElemO(int inputNumber){
+    private int addNewElemO(int inputNumber){
 
         int checkNumber = logic.checkIndex(inputNumber);
 
@@ -98,14 +131,17 @@ public class Field {
 
             fields[array[0]][array[1]] = 2;
 
+            return 1;
+
         } else if (checkNumber == -1){
 
-            System.out.println("Ошибка, данное поле уже занято");
+            //System.out.println("Ошибка, данное поле уже занято");
+            return -1;
 
         } else {
 
-            System.out.println("Элемент вышел за границы поля, вы указали неверное число");
-
+            //System.out.println("Элемент вышел за границы поля, вы указали неверное число");
+            return 0;
         }
     }
 
@@ -117,7 +153,15 @@ public class Field {
 
             for (int j = 0; j < fields[i].length; j++) {
 
-                System.out.print(fields[i][j] + " ");
+                if (fields[i][j] == 1) {
+                    gameField[i][j] = 'x';
+                } else if (fields[i][j] == 2){
+                    gameField[i][j] = 'o';
+                } else {
+                    gameField[i][j] = '*';
+                }
+
+                System.out.print(gameField[i][j]);
             }
 
             System.out.println();
